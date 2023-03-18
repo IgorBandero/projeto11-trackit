@@ -1,6 +1,9 @@
 import Logo from "./Logo";
 import styled from "styled-components";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function SignupScreen(){
 
@@ -8,10 +11,12 @@ export default function SignupScreen(){
     const [image, setImage] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [objNewUser, setObjNewUser] = useState([]);
+    const [statusBtn, setStatusBtn] = useState(false)
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        if (name === "name") {
+        if (name === "nameUser") {
             setNameUser(value);
         } else if (name === "image") {
             setImage(value);
@@ -23,28 +28,47 @@ export default function SignupScreen(){
         }
     }
 
-    function signUp (emailUser, passwordUser, nameUser, imageUser){
+    function signUp (event){
       
-        let objNewUser = {
-            email: emailUser,
-            password: passwordUser, 
+        event.preventDefault(); 
+
+        let user = {
+            email: email,
             name: nameUser,
-            image: imageUser
+            image: image,
+            password: password 
         }
 
-        console.log(objNewUser);
-    }
+        setStatusBtn(true);
+        setObjNewUser(user);
 
+        const requestSignUp = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", objNewUser);
+    
+        requestSignUp.then(response => {
+            //console.log(response.data);
+        });
+   
+        requestSignUp.catch(errorRequest => {
+            console.log(errorRequest.response.data);
+        });
+    
+    }
 
     return (
         <Container>
             <Logo />
-            <input data-test="email-input" name="email" type="text" placeholder="email" value={email} onChange={handleChange}></input>
-            <input data-test="password-input" name="password" type="password" placeholder="senha" value={password} onChange={handleChange}></input>
-            <input data-test="user-name-input" name="name" type="text" placeholder="nome" value={nameUser} onChange={handleChange}></input>
-            <input data-test="user-image-input" name="image" type="file" placeholder="foto" value={image} onChange={handleChange}></input>
-            <button data-test="signup-btn" onClick={() => signUp(email, password, nameUser, image)} > Cadastrar </button>
-            <a data-test="login-link"> Já tem uma conta? Faça login! </a>
+            <form onSubmit={signUp}>
+                <input data-test="email-input" disabled={statusBtn} name="email" type="email" placeholder="email" required value={email} onChange={handleChange}></input>
+                <input data-test="password-input" disabled={statusBtn} name="password" type="password" placeholder="senha" required value={password} onChange={handleChange}></input>
+                <input data-test="user-name-input" disabled={statusBtn} name="nameUser" type="text" placeholder="nome" required value={nameUser} onChange={handleChange}></input>
+                <input data-test="user-image-input" disabled={statusBtn} name="image" type="text" placeholder="foto" required value={image} onChange={handleChange}></input>
+                <button data-test="signup-btn" disabled={statusBtn} type="submit"> 
+                    {statusBtn ? (
+                        <ThreeDots type="ThreeDots" color="#fff" height={20} width={50} />
+                    ) : ("Cadastrar")} 
+                </button>
+            </form>           
+            <Link to="/"> <span data-test="login-link"> Já tem uma conta? Faça login! </span> </Link>
         </Container>        
     )
 }
@@ -57,6 +81,23 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input:disabled {
+        background-color: #F2F2F2;
+    }
+
+    input::placeholder {
+        color: #DBDBDB;
+    }
+
+    input:focus, input:valid {
+        color: black;
+    }
 
     input {
         width: 303px;
@@ -72,12 +113,18 @@ const Container = styled.div`
         font-weight: 400;
         font-size: 20px;
         line-height: 25px;
-        color: #DBDBDB;
+    }
+
+    button:disabled {
+        opacity: 0.7;
     }
 
     button {
         width: 303px;
         height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-bottom: 25px;
         background: #52B6FF;
         border-radius: 5px;
@@ -105,5 +152,7 @@ const Container = styled.div`
     input[type="file"]::file-selector-button {
         display: none;
     }
+
+    
 
 `

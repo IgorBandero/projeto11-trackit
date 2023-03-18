@@ -1,19 +1,62 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 import Logo from "./Logo";
 
-export default function LoginScreen (){
+export default function LoginScreen (){  
 
-   
+    const [objUser, setobjUser] = useState(undefined);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [statusBtn, setStatusBtn] = useState(false);
+    const [user, setUser] = useState("");
+
+    useEffect(() => {
+        if (objUser !== undefined){
+            axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", objUser)
+             .then(response => setUser(response.data))
+             .catch(errorRequest => alert("Erro ao tentar entrar no Trackit, por favor tente novamente!"))
+        }}, [objUser])
+
+             
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        if (name === "email"){
+            setEmail(value);
+        }
+        else if (name === "password"){
+            setPassword(value);
+        }
+    }
+
+    function signIn(event){
+
+        event.preventDefault(); 
+
+        let user = {
+            email: email,
+            password: password 
+        }
+        setStatusBtn(true);
+        setobjUser(user);
+    }
 
     return (
-
         <Container>
             <Logo />
-            <input data-test="email-input" name="email" type="text" placeholder="email" ></input>
-            <input data-test="password-input" name="password" type="text" placeholder="senha"></input>
-            <button data-test="login-btn"> Enviar </button>
+            <form onSubmit={signIn}>
+                <input data-test="email-input" disabled={statusBtn} name="email" type="text" placeholder="email" value={email} onChange={handleChange} ></input>
+                <input data-test="password-input" disabled={statusBtn} name="password" type="password" placeholder="senha" value={password} onChange={handleChange} ></input>
+                <button data-test="login-btn" disabled={statusBtn} type="submit"> 
+                
+                {statusBtn ? (
+                    <ThreeDots type="ThreeDots" color="#fff" height={20} width={50} />
+                ) : ("Enviar")}
+
+                </button>
+            </form>            
             <Link to="/cadastro"> <span data-test="signup-link"> Não tem uma conta? Cadastre-se! </span> </Link>
         </Container>
     )
@@ -27,6 +70,23 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input:disabled {
+        background-color: #F2F2F2;
+    }
+
+    input::placeholder {
+        color: #DBDBDB;
+    }
+
+    input:focus, input:valid {
+        color: black;
+    }
 
     input {
         width: 303px;
@@ -45,9 +105,16 @@ const Container = styled.div`
         color: #DBDBDB;
     }
 
+    button:disabled {
+        opacity: 0.7;
+    }
+
     button {
         width: 303px;
         height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-bottom: 25px;
         background: #52B6FF;
         border-radius: 5px;
