@@ -1,6 +1,6 @@
 import Logo from "./Logo";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
@@ -12,7 +12,8 @@ export default function SignupScreen(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [objNewUser, setObjNewUser] = useState([]);
-    const [statusBtn, setStatusBtn] = useState(false)
+    const [statusBtn, setStatusBtn] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -45,14 +46,18 @@ export default function SignupScreen(){
         const requestSignUp = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", objNewUser);
     
         requestSignUp.then(response => {
-            //console.log(response.data);
+            navigate("/");
         });
    
-        requestSignUp.catch(errorRequest => {
-            console.log(errorRequest.response.data);
-        });
+        requestSignUp.catch(errorRequest => handleError());
     
     }
+
+    function handleError(){
+        setStatusBtn(false);      
+        alert("Erro no cadastro, por favor tente novamente! ");         
+    }
+
 
     return (
         <Container>

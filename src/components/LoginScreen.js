@@ -1,23 +1,23 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
 import Logo from "./Logo";
 
 export default function LoginScreen (){  
 
-    const [objUser, setobjUser] = useState(undefined);
+    const [objUser, setObjUser] = useState(undefined);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [statusBtn, setStatusBtn] = useState(false);
-    const [user, setUser] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (objUser !== undefined){
             axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", objUser)
-             .then(response => setUser(response.data))
-             .catch(errorRequest => alert("Erro ao tentar entrar no Trackit, por favor tente novamente!"))
+             .then(response => navigate("/hoje"))
+             .catch(errorRequest => handleError())
         }}, [objUser])
 
              
@@ -40,7 +40,12 @@ export default function LoginScreen (){
             password: password 
         }
         setStatusBtn(true);
-        setobjUser(user);
+        setObjUser(user);
+    }
+
+    function handleError(){
+        setStatusBtn(false);      
+        alert("Erro no login, por favor tente novamente! ");         
     }
 
     return (
