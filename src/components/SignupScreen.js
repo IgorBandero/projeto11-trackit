@@ -11,7 +11,7 @@ export default function SignupScreen(){
     const [image, setImage] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [objNewUser, setObjNewUser] = useState(undefined);
+    const [objNewUser, setObjNewUser] = useState([]);
     const [statusBtn, setStatusBtn] = useState(false);
     const navigate = useNavigate();
 
@@ -19,8 +19,8 @@ export default function SignupScreen(){
         if (objNewUser !== undefined){
             axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", objNewUser)
              .then(response => navigate("/"))
-             .catch(errorRequest => handleError())
-        }}, [objNewUser])    
+             .catch(errorRequest => handleError(errorRequest.response.status))
+        }}, [objNewUser])
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -46,14 +46,18 @@ export default function SignupScreen(){
             image: image,
             password: password 
         }
-
         setStatusBtn(true);
         setObjNewUser(user);
     }
 
-    function handleError(){
+    function handleError(erro){
         setStatusBtn(false);      
-        alert("Erro no cadastro, por favor tente novamente! ");         
+        if (erro === 409){
+            alert("Erro no cadastro, usuário já existe! ");       
+        }
+        else {
+            alert("Erro no cadastro, por favor tente novamente! ");  
+        }                 
     }
 
 
