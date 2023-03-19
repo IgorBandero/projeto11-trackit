@@ -11,9 +11,16 @@ export default function SignupScreen(){
     const [image, setImage] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [objNewUser, setObjNewUser] = useState([]);
+    const [objNewUser, setObjNewUser] = useState(undefined);
     const [statusBtn, setStatusBtn] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (objNewUser !== undefined){
+            axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", objNewUser)
+             .then(response => navigate("/"))
+             .catch(errorRequest => handleError())
+        }}, [objNewUser])    
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -42,15 +49,6 @@ export default function SignupScreen(){
 
         setStatusBtn(true);
         setObjNewUser(user);
-
-        const requestSignUp = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", objNewUser);
-    
-        requestSignUp.then(response => {
-            navigate("/");
-        });
-   
-        requestSignUp.catch(errorRequest => handleError());
-    
     }
 
     function handleError(){

@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { Context } from "./Context";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
@@ -7,6 +8,7 @@ import Logo from "./Logo";
 
 export default function LoginScreen (){  
 
+    const { userInfo, setUserInfo } = useContext(Context);
     const [objUser, setObjUser] = useState(undefined);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,7 +18,7 @@ export default function LoginScreen (){
     useEffect(() => {
         if (objUser !== undefined){
             axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", objUser)
-             .then(response => navigate("/hoje"))
+             .then(response => join(response.data))
              .catch(errorRequest => handleError())
         }}, [objUser])
 
@@ -46,6 +48,11 @@ export default function LoginScreen (){
     function handleError(){
         setStatusBtn(false);      
         alert("Erro no login, por favor tente novamente! ");         
+    }
+
+    function join (userLogged){
+        setUserInfo(userLogged);
+        navigate("/hoje");
     }
 
     return (
