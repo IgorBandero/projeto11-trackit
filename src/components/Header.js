@@ -24,6 +24,7 @@ const Container = styled.div`
     position: fixed;
     top: 0;
     padding: 20px;
+    z-index: 2;
 
     p {
         font-family: 'Playball', cursive;

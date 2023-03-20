@@ -8,7 +8,7 @@ export default function Menu (props){
 
     const navigate = useNavigate();
     const [totalHabits, setTotalHabits] = useState(undefined);
-    const [doneHabits, setDoneHabits] = useState(0);
+    const [doneHabits, setDoneHabits] = useState(1);
 
     function goTodayScreen(){
         navigate("/hoje");
@@ -18,7 +18,7 @@ export default function Menu (props){
         <Container data-test="menu">
             
             <button data-test="habit-link" onClick={() => navigate("/habitos")}> Hábitos </button> 
-            <button data-test="menu"  className="todayBtn" onClick={goTodayScreen}> 
+            <button data-test="today-link"  className="todayBtn" onClick={goTodayScreen}> 
                 <div className="progressBar">
                     <CircularProgressbar value={doneHabits} maxValue={props.habitsTotal} text={"Hoje"} trailColor={"black"} strokeWidth={10} 
                                     styles={{
@@ -52,6 +52,7 @@ const Container = styled.div`
     align-items: center;
     padding: 35px;
     background-color: #FFFFFF;
+    z-index: 2;
 
     .today {
         color: #FFFFFF;

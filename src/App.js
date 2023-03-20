@@ -6,8 +6,7 @@ import LoginScreen from './components/LoginScreen';
 import SignupScreen from './components/SignupScreen';
 import TodayScreen from "./components/TodayScreen";
 import MyHabits from "./components/MyHabits";
-import HabitsDeck from "./components/HabitsDeck";
-import HistoryHabits from "./components/HistoryHabits";
+import History from "./components/History";
 
 function App() {
   return (
@@ -18,7 +17,7 @@ function App() {
           <Route path="/cadastro" element={<SignupScreen />} />
           <Route path="/hoje" element={<TodayScreen />} />
           <Route path="/habitos" element={<MyHabits />} />
-          <Route path="/historico" element={<HistoryHabits />} />
+          <Route path="/historico" element={<History />} />
         </Routes>  
       </BrowserRouter>
     </Provider>    

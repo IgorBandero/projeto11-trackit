@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { Context } from "./Context";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import HabitCheck from "./HabitCheck";
 
 export default function HabitsDeck(props){
 
@@ -25,13 +26,15 @@ export default function HabitsDeck(props){
 
     return (
         <Container>
-            
-        
+            <HabitCheck />
+            <HabitCheck />
+            <HabitCheck />         
         </Container>
     )
 }
 
 const Container = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
 `

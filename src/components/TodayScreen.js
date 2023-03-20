@@ -3,6 +3,7 @@ import styled from "styled-components"
 import Header from "./Header"
 import Menu from "./Menu"
 import HabitsDeck from "./HabitsDeck";
+
 export default function TodayScreen(){
 
     let todayDate = "Segunda, 17/05";
@@ -11,9 +12,7 @@ export default function TodayScreen(){
     const [totalHabits, setTotalHabits] = useState(undefined);
 
     function getHabits(habits){
-        console.log(habits);
         let habitsTotal = habits.length;
-        console.log("Total de hábitos: " + habitsTotal);
         setTotalHabits(habitsTotal);
     }
 
@@ -21,8 +20,8 @@ export default function TodayScreen(){
         <Container>
             <Header />
             <Date>
-                <h2 className="day"> {todayDate} </h2>
-                <p className="status"> {todayHabits} </p>
+                <h2 data-test="today" className="day"> {todayDate} </h2>
+                <p data-test="today-counter" className="status"> {todayHabits} </p>
             </Date>       
             <HabitsDeck handleHabits={getHabits} />     
             <Menu habitsTotal={totalHabits} />

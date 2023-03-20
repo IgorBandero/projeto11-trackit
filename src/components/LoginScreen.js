@@ -110,7 +110,7 @@ const Container = styled.div`
         border-radius: 5px;
         margin-bottom: 5px;
         padding-left: 10px;
-        font-family: 'Lexend Deca';
+        font-family: 'Lexend Deca', sans-serif;;
         font-weight: 400;
         font-size: 20px;
         line-height: 25px;
