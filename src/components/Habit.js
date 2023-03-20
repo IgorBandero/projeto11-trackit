@@ -1,24 +1,58 @@
 import { useState } from "react"
 import styled from "styled-components"
 import trashIcon from "../assets/delete.png"
+import DayBtn from "./DayBtn";
 
-export default function Habit(){
+export default function Habit(props){
 
-    const [titleHabit, setTitleHabit] = useState("Ler 1 capítulo de livro");
+    console.log(props.days);
 
+    function isSelected(day){
+
+        let daysList = props.days;
+
+        switch (day) {
+            case "Dom":
+              daysList.push(7);
+                break;
+            case "Seg":
+                daysList.push(1);
+                break;
+            case "Ter":
+                daysList.push(2);
+                break;
+            case "Qua":
+                daysList.push(3);
+                break;
+            case "Qui":
+                daysList.push(4);
+                break;
+            case "Sex":
+                daysList.push(5);
+                break;
+            case "Sab":
+                daysList.push(6);
+                break;
+            default:
+              console.log("Erro ao selecionar o dia");
+                break;
+        }
+    }
+    
     return (
         <Container data-test="habit-container">
-            <h2 data-test="habit-name" > {titleHabit} </h2>
+            <h2 data-test="habit-name" > {props.name} </h2>
             <div className="daysBtns"> 
-                <button data-test="habit-day">D</button>
-                <button data-test="habit-day">S</button>
-                <button data-test="habit-day">T</button>
-                <button data-test="habit-day">Q</button>
-                <button data-test="habit-day">Q</button>
-                <button data-test="habit-day">S</button>
-                <button data-test="habit-day">S</button>
+                <DayBtn day="Dom" status={(props.days.includes(7)) ? true : false} selectFunction={isSelected} />
+                <DayBtn day="Seg" status={(props.days.includes(1)) ? true : false} selectFunction={isSelected} />
+                <DayBtn day="Ter" status={(props.days.includes(2)) ? true : false} selectFunction={isSelected} />
+                <DayBtn day="Qua" status={(props.days.includes(3)) ? true : false} selectFunction={isSelected} />
+                <DayBtn day="Qui" status={(props.days.includes(4)) ? true : false} selectFunction={isSelected} />
+                <DayBtn day="Sex" status={(props.days.includes(5)) ? true : false} selectFunction={isSelected} />
+                <DayBtn day="Sab" status={(props.days.includes(6)) ? true : false} selectFunction={isSelected} />
+                    
             </div>
-            <img data-test="habit-delete-btn" className="deleteBtn" src={trashIcon} alt="delete image" />        
+            <img data-test="habit-delete-btn" onClick={() => props.delete(props.id)} className="deleteBtn" src={trashIcon} alt="delete image" />        
         </Container>
     )
 }
@@ -67,6 +101,7 @@ const Container = styled.div`
         margin-top: 10px;
         width: 300px;
         align-self: center;
+        display: flex;
     }
 
     .daysBtns button {
@@ -125,6 +160,7 @@ const Container = styled.div`
         position: absolute;     
         right: 10px;
         top: 10px;
+        cursor: pointer;
     }
     
 `

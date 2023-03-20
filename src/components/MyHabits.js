@@ -1,4 +1,5 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
+import axios from "axios";
 import { Context } from "./Context";
 import styled from "styled-components"
 import Header from "./Header"
@@ -9,21 +10,94 @@ import Habit from "./Habit";
 export default function MyHabits(props){
 
     const { userInfo, setUserInfo } = useContext(Context);
-    const [zeroHabits, setZeroHabits] = useState(true);
+    const [zeroHabits, setZeroHabits] = useState(false);
+    const [statusNewHabit, setStatusNewHabit] = useState("none");
+    const [habitCreated, setHabitCreated] = useState(undefined);
+    const [habitsList, setHabitsList] = useState([]);
+
+    useEffect(() => {
+
+        const token = {
+            headers: {
+                "Authorization": `Bearer ${userInfo.token}`
+            }
+        }
+
+        axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", token)
+           
+        .then(response => listHabits(response.data))
+            
+        .catch(() => handleError())
+
+        }, [habitCreated])
+
+    function showNewHabitForm(){
+        setStatusNewHabit("flex");
+    }
+
+    function cancelNewHabit(){
+        setStatusNewHabit("none");
+    }
+
+    function newHabitCreated(){
+        setZeroHabits(false);
+        {habitCreated ? setHabitCreated(false) : setHabitCreated(true)};
+    }
+
+    function listHabits(habits){
+
+        if (habits.length === 0){
+            setZeroHabits(true);
+        }
+
+        setHabitsList(habits);        
+    }
+
+    function handleError(){    
+        alert("Erro ao listar os hábitos, por favor tente novamente! ");         
+    }
+
+    function handleDeleteError(){    
+        alert("Erro ao apagar o hábito, por favor tente novamente! ");         
+    }
+
+    function deleteHabit(id){
+        let decision = window.confirm("Deseja realmente de apagar o hábito? ");
+
+        const token = {
+            headers: {
+                "Authorization": `Bearer ${userInfo.token}`
+            }
+        }
+
+        if (decision === true){
+
+            let urlHabit = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/" + id;
+            
+            axios.delete(urlHabit, token)
+           
+            .then(response =>  {habitCreated ? setHabitCreated(false) : setHabitCreated(true)})
+                
+            .catch(() => handleDeleteError());
+            
+        }
+    }
 
     return (    
         <Container>
             <Header />
             <div className="myHabits"> 
                 <p> Meus hábitos </p>
-                <button data-test="habit-create-btn"> + </button>
+                <button data-test="habit-create-btn" onClick={showNewHabitForm} > + </button>
             </div>
             
-            <NewHabit />
-            <Habit />
+            <NewHabit cancelFunction={cancelNewHabit} newHabitFunction={newHabitCreated} status={statusNewHabit} />
+            
+            {habitsList.map(element => 
+            <Habit key={element.id} id={element.id} name={element.name} days={element.days} delete={deleteHabit} /> )} 
 
             {zeroHabits ? (<p className="noHabitsMessage"> Você não tem nenhum hábito cadastrado ainda. 
-                            Adicione um hábito para começar a trackear! </p>) : ("")}
+                Adicione um hábito para começar a trackear! </p>) : ("")}
             <Menu />
         </Container> 
     )
@@ -36,6 +110,9 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     background-color: #E5E5E5;
+    margin-bottom: 70px;
+    padding-bottom: 40px;
+    overflow-x: scroll;
 
     .myHabits {
         width: 100%;
@@ -63,6 +140,7 @@ const Container = styled.div`
         font-size: 27px;
         line-height: 34px;
         color: #FFFFFF;
+        cursor: pointer;
     }
 
     .noHabitsMessage {

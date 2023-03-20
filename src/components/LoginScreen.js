@@ -19,7 +19,7 @@ export default function LoginScreen (){
         if (objUser !== undefined){
             axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", objUser)
              .then(response => join(response.data))
-             .catch(errorRequest => handleError())
+             .catch(() => handleError())
         }}, [objUser])
 
              
