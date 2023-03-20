@@ -69,13 +69,19 @@ export default function NewHabit(props){
 
     function createHabit(event){
         setStatusBtn(true);
-        event.preventDefault();          
-        let habit = {
-            name: habitName,
-            days: days
-        };    
-        setNewHabit(habit);    
-        props.cancelFunction();
+        event.preventDefault();      
+        if (habitName.length === 0){
+            alert("Nome do hábito não pode estar vazio!");
+        }    
+        else {
+            let habit = {
+                name: habitName,
+                days: days
+            };    
+            setNewHabit(habit);    
+            props.cancelFunction();
+        }
+        
     }
 
     function habitCreated(result){

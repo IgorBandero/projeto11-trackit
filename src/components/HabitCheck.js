@@ -2,7 +2,7 @@ import { useState } from "react"
 import styled from "styled-components"
 import checkimage from "../assets/checkmark.png"
 
-export default function HabitCheck(){
+export default function HabitCheck(props){
 
     const [titleHabit, setTitleHabit] = useState("Ler 1 capítulo de livro");
     const [sequence, setSequence] = useState("4 dias");
@@ -14,12 +14,13 @@ export default function HabitCheck(){
     return (
         <Container data-test="today-habit-container">
             <div className="text" > 
-                <h2 data-test="today-habit-name"> {titleHabit} </h2>
-                <p data-test="today-habit-sequence"> Sequência atual: <span> {sequence} </span> </p>
-                <p data-test="today-habit-record"> Seu recorde: <span> {record} </span> </p>
+                <h2 data-test="today-habit-name"> {props.name} </h2>
+                <p data-test="today-habit-sequence"> Sequência atual: <span> {props.current} </span> </p>
+                <p data-test="today-habit-record"> Seu recorde: <span> {props.highest} </span> </p>
             </div>            
             <div className="button"> 
-                <button data-test="today-habit-check-btn" colorbtn={colorCheck} borderbtn={borderCheck} >  <img src={checkimage} /> </button>
+                <button data-test="today-habit-check-btn" onClick={() => props.habitDone(props.id)} style={{background: props.done ? "#8FC549" : "#EBEBEB", 
+                border: props.done ? "none" : "1px solid #E7E7E7"}}>  <img src={checkimage} /> </button>
             </div>   
         </Container>
     )
@@ -33,6 +34,7 @@ const Container = styled.div`
     border-radius: 5px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background-color: #FFFFFF;
     position: relative;
 
@@ -48,9 +50,9 @@ const Container = styled.div`
     .button button {
         width: 70px;
         height: 70px;
-        background: ${props => props.colorbtn};
         border-radius: 5px;
-        border: ${props => props.borderbtn};
+        margin-right: 17px;
+        cursor: pointer;
     }
 
     .button button img {

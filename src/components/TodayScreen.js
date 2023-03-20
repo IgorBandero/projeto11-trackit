@@ -1,29 +1,122 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components"
 import Header from "./Header"
 import Menu from "./Menu"
-import HabitsDeck from "./HabitsDeck";
+import HabitCheck from "./HabitCheck"
+import { Context } from "./Context";
+import axios from "axios";
+
 
 export default function TodayScreen(){
 
-    let todayDate = "Segunda, 17/05";
+    var dateToday = new window.Date();
+    let year = dateToday.getFullYear();
+    let month = dateToday.getMonth() + 1;
+    let dayToday = dateToday.getDate();
+    let weekday = dateToday.getDay();
+    weekday = getDayName(weekday);
+    let fullday = weekday + ", " + dayToday + "/" + month + "/" + year;
 
-    const [todayHabits, setTodayHabits] = useState("Nenhum hábito concluído ainda")
+    const { userInfo, setUserInfo } = useContext(Context);
+    const [todayHabitsList, setTodayHabitsList] = useState([]);
     const [totalHabits, setTotalHabits] = useState(undefined);
+    const [message, setMessage] = useState("Nenhum hábito concluído ainda");
 
-    function getHabits(habits){
-        let habitsTotal = habits.length;
-        setTotalHabits(habitsTotal);
+    useEffect(() => {
+        
+        const token = {
+                headers: {
+                    "Authorization": `Bearer ${userInfo.token}`
+                }
+            }
+
+            axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", token)
+            .then(response => showHabits(response.data))
+            .catch(() => handleError())
+        }, [])
+
+    function getDayName(day){
+
+        switch (day) {
+            case 1:
+                return "Segunda";
+                break;
+            case 2:
+                return "Terça";
+                break;
+            case 3:
+                return "Quarta";
+                break;
+            case 4:
+                return "Quinta";
+                break;
+            case 5:
+                return "Sexta";
+                break;
+            case 6:
+                return "Sábado";
+                break;
+            case 7:
+                return "Domingo";
+                break;
+            default:
+              console.log("Erro ao selecionar o dia");
+                break;
+        }
     }
+    function showHabits(habits){
+        let arrayHabits = habits;
+        setToday();
+        setTodayHabitsList(arrayHabits);
+    }   
+
+    function setToday(){
+
+    }
+
+    function handleError(){  
+        alert("Erro ao mostrar os hábitos, por favor tente novamente! ");         
+    }
+
+    function getHabits(){
+
+    }
+
+    function selectHabit(id){
+
+        let urlPost = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/" + id + "/check";
+        
+        const token = {
+            headers: {
+                "Authorization": `Bearer ${userInfo.token}`
+            }
+        }
+
+        axios.post(urlPost, token)
+        .then(response => okay(response.data))
+        .catch(() => handleError())
+    }
+
+    function okay (){
+        console.log("Deu certo");
+    }
+    /*  
+            */
 
     return (
         <Container>
             <Header />
             <Date>
-                <h2 data-test="today" className="day"> {todayDate} </h2>
-                <p data-test="today-counter" className="status"> {todayHabits} </p>
+                <h2 data-test="today" className="day"> {fullday} </h2>
+                <p data-test="today-counter" className="status"> {message} </p>
             </Date>       
-            <HabitsDeck handleHabits={getHabits} />     
+        
+            {todayHabitsList.map (habit => 
+                <HabitCheck habitDone={selectHabit} id={habit.id} name={habit.name} 
+                done={habit.done} highest={habit.highestSequence} 
+                current={habit.currentSequence} handleHabits={getHabits} />  
+            )} 
+               
             <Menu habitsTotal={totalHabits} />
         </Container>
     )
