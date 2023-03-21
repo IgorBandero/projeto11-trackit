@@ -7,8 +7,8 @@ import 'react-circular-progressbar/dist/styles.css';
 export default function Menu (props){
 
     const navigate = useNavigate();
-    const [totalHabits, setTotalHabits] = useState(undefined);
-    const [doneHabits, setDoneHabits] = useState(1);
+    const [totalHabits, setTotalHabits] = useState(props.habitsTotal);
+    const [doneHabits, setDoneHabits] = useState(props.done);
 
     function goTodayScreen(){
         navigate("/hoje");
@@ -20,7 +20,7 @@ export default function Menu (props){
             <button data-test="habit-link" onClick={() => navigate("/habitos")}> Hábitos </button> 
             <button data-test="today-link"  className="todayBtn" onClick={goTodayScreen}> 
                 <div className="progressBar">
-                    <CircularProgressbar value={doneHabits} maxValue={props.habitsTotal} text={"Hoje"} trailColor={"black"} strokeWidth={10} 
+                    <CircularProgressbar value={props.done} maxValue={props.habitsTotal} text={"Hoje"} trailColor={"black"} strokeWidth={10} 
                                     styles={{
                                         path: {
                                         stroke: "#FFFFFF",

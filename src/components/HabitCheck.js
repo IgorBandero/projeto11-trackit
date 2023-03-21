@@ -9,7 +9,6 @@ export default function HabitCheck(props){
     const [record, setRecord] = useState ("5 dias")
     const [colorCheck, setColorCheck] = useState("#EBEBEB");
     const [borderCheck, setBorderCheck] = useState("1px solid #E7E7E7")
-    // when checked background: #8FC549 border: none
 
     return (
         <Container data-test="today-habit-container">

@@ -5,8 +5,6 @@ import DayBtn from "./DayBtn";
 
 export default function Habit(props){
 
-    console.log(props.days);
-
     function isSelected(day){
 
         let daysList = props.days;

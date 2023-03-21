@@ -18,9 +18,14 @@ export default function TodayScreen(){
     let fullday = weekday + ", " + dayToday + "/" + month + "/" + year;
 
     const { userInfo, setUserInfo } = useContext(Context);
-    const [todayHabitsList, setTodayHabitsList] = useState([]);
-    const [totalHabits, setTotalHabits] = useState(undefined);
+    const { totalHabits, setTotalHabits} = useContext(Context);
+    // const [totalHabits, setTotalHabits] = useState(undefined);
+    const { totalDone, setTotalDone } = useState(undefined);
+    // const [totalDone, setTotalDone] = useState(undefined);
+    const [todayHabitsList, setTodayHabitsList] = useState([]);    
+    const [percentageDone, setPercentageDone] = useState(undefined);
     const [message, setMessage] = useState("Nenhum hábito concluído ainda");
+    const [updateHabits, setUpdateHabits] = useState(false);
 
     useEffect(() => {
         
@@ -29,11 +34,10 @@ export default function TodayScreen(){
                     "Authorization": `Bearer ${userInfo.token}`
                 }
             }
-
             axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", token)
             .then(response => showHabits(response.data))
             .catch(() => handleError())
-        }, [])
+        }, [updateHabits])
 
     function getDayName(day){
 
@@ -66,6 +70,15 @@ export default function TodayScreen(){
     }
     function showHabits(habits){
         let arrayHabits = habits;
+        let totalDone = 0;
+        for (let i=0; i<habits.length; i++){
+            if (habits[i].done){
+                totalDone++;
+            }
+        } 
+        setTotalDone(totalDone);
+        setPercentageDone(totalDone/(habits.length));
+        setTotalHabits(habits.length);
         setToday();
         setTodayHabitsList(arrayHabits);
     }   
@@ -84,6 +97,8 @@ export default function TodayScreen(){
 
     function selectHabit(id){
 
+        const emptyObj = {};
+
         let urlPost = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/" + id + "/check";
         
         const token = {
@@ -92,16 +107,15 @@ export default function TodayScreen(){
             }
         }
 
-        axios.post(urlPost, token)
-        .then(response => okay(response.data))
+        axios.post(urlPost, emptyObj, token)
+        .then(response => habitSelected(response.data))
         .catch(() => handleError())
     }
 
-    function okay (){
-        console.log("Deu certo");
+    function habitSelected (result){
+
+        {updateHabits ? setUpdateHabits(false) : setUpdateHabits(true)}
     }
-    /*  
-            */
 
     return (
         <Container>
@@ -112,12 +126,12 @@ export default function TodayScreen(){
             </Date>       
         
             {todayHabitsList.map (habit => 
-                <HabitCheck habitDone={selectHabit} id={habit.id} name={habit.name} 
+                <HabitCheck key={habit.id} habitDone={selectHabit} id={habit.id} name={habit.name} 
                 done={habit.done} highest={habit.highestSequence} 
                 current={habit.currentSequence} handleHabits={getHabits} />  
             )} 
                
-            <Menu habitsTotal={totalHabits} />
+            <Menu habitsTotal={totalHabits} done={totalDone} />
         </Container>
     )
 }
