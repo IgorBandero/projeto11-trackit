@@ -18,10 +18,10 @@ export default function TodayScreen(){
     let fullday = weekday + ", " + dayToday + "/" + month + "/" + year;
 
     const { userInfo, setUserInfo } = useContext(Context);
-    const { totalHabits, setTotalHabits} = useContext(Context);
-    // const [totalHabits, setTotalHabits] = useState(undefined);
-    const { totalDone, setTotalDone } = useState(undefined);
-    // const [totalDone, setTotalDone] = useState(undefined);
+    //const { totalHabits, setTotalHabits} = useContext(Context);
+    const [totalHabits, setTotalHabits] = useState(undefined);
+    //const { totalDone, setTotalDone } = useState(undefined);
+    const [totalDone, setTotalDone] = useState(undefined);
     const [todayHabitsList, setTodayHabitsList] = useState([]);    
     const [percentageDone, setPercentageDone] = useState(undefined);
     const [message, setMessage] = useState("Nenhum hábito concluído ainda");
